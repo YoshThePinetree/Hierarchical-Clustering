@@ -43,7 +43,7 @@ public class HC {
 		/////////////////////////////////
 		// Making Dissimilarity Matrix //
 		/////////////////////////////////
-		String dist = "Euclid";
+		String dist = "Chebyshev";
 		Linkage link = new Linkage();
 		double[][] D = new double[nd][nd];
 		D=link.Feat2Dist(meas, nd, nf, dist);
