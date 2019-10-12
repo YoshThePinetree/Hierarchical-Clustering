@@ -53,7 +53,7 @@ public class HC {
 		// write out the objective function value & search log
 		String pathname = "C:\\result\\HC\\";
 		String sufi= ".csv";
-		String fnameF = "Dmatrix";
+		String fnameF = "D";
 		
 		WriteResult.Output(D, nd, nd, pathname + fnameF + sufi);
 		System.out.println(pathname + "D" + sufi); 
