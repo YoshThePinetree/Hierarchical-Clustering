@@ -43,18 +43,17 @@ public class HC {
 		/////////////////////////////////
 		// Making Dissimilarity Matrix //
 		/////////////////////////////////
-		String dist = "Chebyshev";
+		String dist = "Euclid";
 		Linkage link = new Linkage();
 		double[][] D = new double[nd][nd];
 		D=link.Feat2Dist(meas, nd, nf, dist);
 		
-		
+
 		
 		// write out the objective function value & search log
 		String pathname = "C:\\result\\HC\\";
 		String sufi= ".csv";
-		String fnameF = "D";
-		
+		String fnameF = "D";		
 		WriteResult.Output(D, nd, nd, pathname + fnameF + sufi);
 		System.out.println(pathname + "D" + sufi); 
 	}

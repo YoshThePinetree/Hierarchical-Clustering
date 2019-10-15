@@ -15,6 +15,7 @@ public class Linkage {
 						xsum = xsum + Math.pow((data[i][k]-data[j][k]),2);
 					}
 					D[i][j]=Math.sqrt(xsum);
+					xsum = 0;
 				}
 				count = count+1;
 			}
@@ -22,17 +23,26 @@ public class Linkage {
 			
 			break;
 		case "SEuclid":	// Metric: Scaled Euclidean distance
-			double mu = 0;
-			double sigma = 0;
+			double[] X = new double[nd];
+			double[] sigma = new double[nf];
+			double val;
+			
+			StatCalc stat = new StatCalc();
+			for(int i=0; i<nf; i++) {
+				X = getCul(data,i);
+				sigma[i] = stat.Var(X);
+			}
 			
 			for(int i=0; i<nd; i++) {
 				for(int j=count; j<nd; j++) {					
 					for(int k=0; k<nf; k++) {
-						mu = (data[i][k] + data[j][k])/2;
-						sigma = Math.sqrt((Math.pow((data[i][k]-mu),2) + Math.pow((data[j][k]-mu),2)) / 2);
-						xsum = xsum + (Math.pow((data[i][k]-data[j][k]),2)) / sigma;
+						val = ((Math.pow((data[i][k]-data[j][k]),2)) / sigma[k]);
+						if(Double.isNaN(val) == false) {
+							xsum = xsum + val;
+						}
 					}
 					D[i][j]=Math.sqrt(xsum);
+					xsum = 0;
 				}
 				count = count+1;
 			}
@@ -47,6 +57,7 @@ public class Linkage {
 						xsum = xsum + Math.abs(data[i][k]-data[j][k]);
 					}
 					D[i][j] = xsum;
+					xsum = 0;
 				}
 				count = count+1;
 			}
@@ -109,5 +120,13 @@ public class Linkage {
 	  }
 	   
 	  return newMatrix;
+	}
+	
+	private static double[] getCul(double[][] matrix, int cul) {
+		double[] X = new double[matrix.length];
+		for(int i=0; i<matrix.length; i++) {
+			X[i] = matrix[i][cul];
+		}
+		return X;
 	}
 }
