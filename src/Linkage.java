@@ -1,132 +1,87 @@
 // Linkage class
 public class Linkage {
-	
-	public double[][] Feat2Dist(double[][] data, int nd, int nf, String dist){
-		double[][] D = new double[nd][nd];
-		int count=1;
-		double xsum=0;
+	public double[][] ltree(double[][] data, int nd, String lmtd){	// building cluster tree
+		double[][] Z = new double[nd-1][3];	// cluster linkage tree: output
 		
-		switch (dist) {
-		case "Euclid":	// Metric: Euclidean distance
-			
-			for(int i=0; i<nd; i++) {
-				for(int j=count; j<nd; j++) {					
-					for(int k=0; k<nf; k++) {
-						xsum = xsum + Math.pow((data[i][k]-data[j][k]),2);
-					}
-					D[i][j]=Math.sqrt(xsum);
-					xsum = 0;
-				}
-				count = count+1;
-			}
-			D = Linkage.matUcopy2L(D);
-			
-			break;
-		case "SEuclid":	// Metric: Scaled Euclidean distance
-			double[] X = new double[nd];
-			double[] sigma = new double[nf];
-			double val;
-			
-			StatCalc stat = new StatCalc();
-			for(int i=0; i<nf; i++) {
-				X = getCul(data,i);
-				sigma[i] = stat.Var(X);
-			}
-			
-			for(int i=0; i<nd; i++) {
-				for(int j=count; j<nd; j++) {					
-					for(int k=0; k<nf; k++) {
-						val = ((Math.pow((data[i][k]-data[j][k]),2)) / sigma[k]);
-						if(Double.isNaN(val) == false) {
-							xsum = xsum + val;
+		switch (lmtd) {
+			case "Single":	// Linkage: the nearest neighbor distance
+				double mind=1000;	// the minimum distance among data
+				int count=1;
+				int i1=0, j1=0;
+				for(int i=0; i<nd; i++) {
+					for(int j=count; j<nd; j++) {
+						if(data[i][j]<mind) {
+							mind=data[i][j];
+							i1=i;
+							j1=j;
 						}
 					}
-					D[i][j]=Math.sqrt(xsum);
-					xsum = 0;
+					count=count+1;
 				}
-				count = count+1;
-			}
-			D = Linkage.matUcopy2L(D);
-			
+				Z[0][0]=(double)i1;
+				Z[0][1]=(double)j1;
+				Z[0][2]=mind;
+				double[] vr = new double[nd];
+				double[] vc = new double[nd];
+				double[] v1 = new double[nd];
+				vr = getCul(data,i1);
+				vc = getCul(data,j1);
+				v1 = compVecs(vr,vc, "min");	// clustered vector
+				
+				
+				
 			break;
-		case "City":	// Metric: city block distance
-
-			for(int i=0; i<nd; i++) {
-				for(int j=count; j<nd; j++) {					
-					for(int k=0; k<nf; k++) {
-						xsum = xsum + Math.abs(data[i][k]-data[j][k]);
-					}
-					D[i][j] = xsum;
-					xsum = 0;
-				}
-				count = count+1;
-			}
-			D = Linkage.matUcopy2L(D);
-			
-			break;		
-		case "Chebyshev":	// Metric: Chebyshev distance
-			double dmax = 0;
-			double a = 0;
-			
-			for(int i=0; i<nd; i++) {
-				for(int j=count; j<nd; j++) {					
-					for(int k=0; k<nf; k++) {
-						a = Math.abs(data[i][k]-data[j][k]);
-						if(dmax < a) {
-							dmax = a;
-						}
-					}
-					D[i][j] = dmax;
-					dmax=0;
-				}
-				count=count+1;
-			}
-			D = Linkage.matUcopy2L(D);
-			
+			case "Complete":	// Linkage: the farthest neighbor distance
+				
 			break;
-		case "Mahalanobis":
+			case "Average":	// Linkage: Average distance
+				
 			break;
-		case "Cosine":
+			case "Centroid":	// Linkage: Centroid distance
+				
+			break;
+			case "Ward":	// Linkage: Ward's distance
+				
 			break;
 		}
-		return D;
+		
+		return Z;
 	}
-	
-	private static double[][] matrixTranspose(double[][] matrix){
-	  int y = matrix.length;
-	  int x = matrix[0].length;
-	   
-	  double[][] newMatrix = new double[x][y];
-	   
-	  for(int i=0; i<y; i++){
-	    for(int j=0; j<x; j++){
-	      newMatrix[j][i] = matrix[i][j];
-	    }
-	  }
-	   
-	  return newMatrix;
-	}
-	
-	private static double[][] matUcopy2L(double[][] matrix){
-	  int y = matrix.length;
-	  int x = matrix[0].length;
-	   
-	  double[][] newMatrix = matrix;
-	   
-	  for(int i=0; i<y; i++){
-	    for(int j=0; j<x; j++){
-	      newMatrix[j][i] = matrix[i][j];
-	    }
-	  }
-	   
-	  return newMatrix;
-	}
-	
 	private static double[] getCul(double[][] matrix, int cul) {
 		double[] X = new double[matrix.length];
 		for(int i=0; i<matrix.length; i++) {
 			X[i] = matrix[i][cul];
 		}
 		return X;
+	}
+	private static double[] compVecs(double[] vector1, double[] vector2, String how) {
+		int len = vector1.length;
+		double[] vector = new double[len];
+		switch(how) {
+			case "min":
+				for(int i=0; i<len; i++) {
+					if(vector1[i]<vector2[i]) {
+						vector[i]=vector1[i];
+					}else if(vector1[i]>vector2[i]) {
+						vector[i]=vector2[i];
+					}else {
+						vector[i]=vector1[i];
+					}
+				}
+			break;
+			case "max":
+				for(int i=0; i<len; i++) {
+					if(vector1[i]>vector2[i]) {
+						vector[i]=vector1[i];
+					}else if(vector1[i]<vector2[i]) {
+						vector[i]=vector2[i];
+					}else {
+						vector[i]=vector1[i];
+					}
+				}
+			break;
+		}
+		
+	return vector;
 	}
 }

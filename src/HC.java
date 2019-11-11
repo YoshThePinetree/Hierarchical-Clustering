@@ -43,12 +43,22 @@ public class HC {
 		/////////////////////////////////
 		// Making Dissimilarity Matrix //
 		/////////////////////////////////
-		String dist = "Euclid";
-		Linkage link = new Linkage();
+		String dist = "Euclid";	// the distance metric
+		Dissim dissim = new Dissim();
 		double[][] D = new double[nd][nd];
-		D=link.Feat2Dist(meas, nd, nf, dist);
+		D=dissim.Feat2Dist(meas, nd, nf, dist);	// Making (nd*nd) dissimilarity matrix
 		
-
+		////////////////////////
+		// Build Cluster Tree //
+		////////////////////////
+		String lmtd = "Single";	// the linkage method
+		Linkage linkage = new Linkage();
+		double[][] Z = new double[nd-1][3];
+		Z=linkage.ltree(D, nd, lmtd);	// Making (nd*nd) dissimilarity matrix (linkage )
+		
+		System.out.println(Z[0][0]);
+		System.out.println(Z[0][1]);
+		System.out.println(Z[0][2]);
 		
 		// write out the objective function value & search log
 		String pathname = "C:\\result\\HC\\";
