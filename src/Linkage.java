@@ -18,6 +18,8 @@ public class Linkage {
 					}
 					count=count+1;
 				}
+				
+				// initial value
 				Z[0][0]=(double)i1;
 				Z[0][1]=(double)j1;
 				Z[0][2]=mind;
@@ -28,7 +30,25 @@ public class Linkage {
 				vc = getCul(data,j1);
 				v1 = compVecs(vr,vc, "min");	// clustered vector
 				
-				
+				// loop
+				/*
+				while(nd>0) {
+					nd=nd-1;
+					double[][] data1 = new double[nd][nd];	// new dissimilarity matrix
+					
+				}
+					
+				for(int i=0; i<nd; i++) {
+					for(int j=count; j<nd; j++) {
+						if(data[i][j]<mind) {
+							mind=data[i][j];
+							i1=i;
+							j1=j;
+						}
+					}
+					count=count+1;
+				}
+				*/
 				
 			break;
 			case "Complete":	// Linkage: the farthest neighbor distance
@@ -47,6 +67,8 @@ public class Linkage {
 		
 		return Z;
 	}
+	
+	// Get a column from a matrix
 	private static double[] getCul(double[][] matrix, int cul) {
 		double[] X = new double[matrix.length];
 		for(int i=0; i<matrix.length; i++) {
@@ -54,6 +76,8 @@ public class Linkage {
 		}
 		return X;
 	}
+	
+	// Conjecting two vectors in terms of "how"
 	private static double[] compVecs(double[] vector1, double[] vector2, String how) {
 		int len = vector1.length;
 		double[] vector = new double[len];
@@ -83,5 +107,31 @@ public class Linkage {
 		}
 		
 	return vector;
+	}
+	
+	// Get a column from a matrix
+	private static double[][] shrink(double[][] matrix, int n) {	// object matrix: matrix, deleting element number: n
+		double[][] X = new double[matrix.length-1][matrix.length-1];
+		for(int i=0; i<matrix.length; i++) {
+			if(i<n) {
+				for(int j=0; j<matrix.length; j++) {
+					if(j<n) {
+						X[i][j] = matrix[i][j];
+					}else if(j>n) {
+						X[i][j-1] = matrix[i][j];
+					}
+				}
+			}else if(i>n) {
+				for(int j=0; j<matrix.length; j++) {
+					if(j<n) {
+						X[i-1][j] = matrix[i][j];
+					}else if(j>n) {
+						X[i-1][j-1] = matrix[i][j];
+					}
+				}
+			}
+			
+		}
+		return X;
 	}
 }
