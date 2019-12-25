@@ -51,8 +51,8 @@ public class HC {
 		////////////////////////
 		// Build Cluster Tree //
 		////////////////////////
-//		String lmtd = "Single";	// the linkage method
-		String lmtd = "Complete";	// the linkage method
+		String lmtd = "Single";	// the linkage method
+//		String lmtd = "Complete";	// the linkage method
 		Linkage linkage = new Linkage();
 		double[][] Z = new double[nd-1][4];
 		Z=linkage.ltree(D, nd, lmtd);	// cluster linkage tree
@@ -63,6 +63,11 @@ public class HC {
 			System.out.printf("%.4f\t",Z[i][2]);
 			System.out.printf("%.0f\n",Z[i][3]);
 		}
+		
+		double[] C = new double[nd];	// element clustered
+		double cut = 0.82;	// the height of cluster tree to cut
+		Clustering clst = new Clustering();
+		C=clst.group(Z, nd, cut);	// cluster linkage tree
 		
 		// write out the objective function value & search log
 		String pathname = "C:\\result\\HC\\";
