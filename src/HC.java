@@ -55,25 +55,28 @@ public class HC {
 //		String lmtd = "Complete";	// the linkage method
 		Linkage linkage = new Linkage();
 		double[][] Z = new double[nd-1][4];
-		Z=linkage.ltree(D, nd, lmtd);	// cluster linkage tree
+		Z=linkage.ltree(D, nd, lmtd);	// cluster linkage tree		
 		
-		for(int i=0; i<nd-1; i++) {
-			System.out.printf("%.0f\t",Z[i][0]);
-			System.out.printf("%.0f\t",Z[i][1]);
-			System.out.printf("%.4f\t",Z[i][2]);
-			System.out.printf("%.0f\n",Z[i][3]);
-		}
-		
-		double[] C = new double[nd];	// element clustered
-		double cut = 0.82;	// the height of cluster tree to cut
+		int[] C = new int[nd];	// element clustered
+		double cut = 0.7;	// the height of cluster tree to cut
 		Clustering clst = new Clustering();
 		C=clst.group(Z, nd, cut);	// cluster linkage tree
+				
+		for(int i=0; i<nd; i++) {
+			System.out.println(C[i]);
+		}
+		
+		double[][] result = new double[nd][2];	// element clustered
+		for(int i=0; i<nd; i++) {
+			result[i][0]=i+1;
+			result[i][1]=C[i];
+		}
 		
 		// write out the objective function value & search log
 		String pathname = "C:\\result\\HC\\";
 		String sufi= ".csv";
-		String fnameF = "D";
-		WriteResult.Output(D, nd, nd, pathname + fnameF + sufi);
-		System.out.println(pathname + "D" + sufi); 
+		String fnameF = "HCresult";
+		WriteResult.Output(result, nd, 2, pathname + fnameF + sufi);
+		System.out.println(pathname + "HCresult" + sufi); 
 	}
 }
